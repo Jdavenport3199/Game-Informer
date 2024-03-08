@@ -60,7 +60,7 @@ export default function Home() {
           <h1>Game Informer</h1>
           <h2 className="subheading">
             <i className="fa-solid fa-puzzle-piece fa-lg"></i>&ensp;Stay ahead
-            in gaming with the <b>latest releases</b> for all of gaming's{" "}
+            in gaming with the <b>latest releases</b> for all of gaming&apos;s{" "}
             <b>trending and upcoming</b> titles.
           </h2>
           <button
