@@ -1,95 +1,141 @@
+"use client";
+import { useRef, useState } from "react";
+import Trending from "./components/Trending";
+import Upcoming from "./components/Upcoming";
+import NewReleases from "./components/NewReleases";
 import Image from "next/image";
-import styles from "./page.module.css";
 
 export default function Home() {
-  return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+  const [trending, setTrending] = useState<boolean>(true);
+  const [newReleases, setNewReleases] = useState<boolean>(false);
+  const [upcoming, setUpcoming] = useState<boolean>(false);
+  const [selectedGame, setSelectedGame] = useState<{
+    id: string;
+    name: string;
+    image: string;
+    releaseDate: string;
+    genres: string[];
+    platforms: string[];
+  } | null>(null);
 
-      <div className={styles.center}>
+  const toggleTrending = () => {
+    setTrending(true);
+    setUpcoming(false);
+    setNewReleases(false);
+    setSelectedGame(null);
+    window.scrollTo(0, 0);
+  };
+
+  const toggleNewReleases = () => {
+    setTrending(false);
+    setUpcoming(false);
+    setNewReleases(true);
+    setSelectedGame(null);
+    window.scrollTo(0, 0);
+  };
+
+  const toggleUpcoming = () => {
+    setTrending(false);
+    setUpcoming(true);
+    setNewReleases(false);
+    setSelectedGame(null);
+    window.scrollTo(0, 0);
+  };
+
+  const div = useRef<HTMLDivElement>(null);
+
+  const scrollTo = (ref: React.RefObject<HTMLDivElement>) => {
+    if (ref.current) {
+      ref.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  return (
+    <main>
+      <div
+        className="header-holder"
+        style={{ display: selectedGame ? "none" : "flex" }}
+      >
+        <div className="header">
+          <h1>Game Informer</h1>
+          <h2 className="subheading">
+            <i className="fa-solid fa-puzzle-piece fa-lg"></i>&ensp;Stay ahead
+            in gaming with the <b>latest releases</b> for all of gaming's{" "}
+            <b>trending and upcoming</b> titles.
+          </h2>
+          <button
+            style={{
+              background: "#f5f5f520",
+              borderRadius: "100px",
+              padding: "1rem 1.8rem 1rem",
+              fontSize: "20px",
+              backdropFilter: "blur(10px)",
+              WebkitBackdropFilter: "blur(10px)",
+            }}
+            onClick={() => {
+              scrollTo(div);
+            }}
+          >
+            Explore Games&ensp;<i className="fa-solid fa-ghost fa-lg"></i>
+          </button>
+        </div>
         <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
+          className="splash-img"
+          src={"/splash.jpg"}
+          width={1920}
+          height={920}
+          alt=""
         />
       </div>
+      <nav>
+        <div className="nav-btn-holder">
+          <button
+            className={trending ? "btn-active" : "none"}
+            onClick={() => {
+              toggleTrending();
+              scrollTo(div);
+            }}
+          >
+            Trending
+          </button>
+          <button
+            className={newReleases ? "btn-active" : "none"}
+            onClick={() => {
+              toggleNewReleases();
+              scrollTo(div);
+            }}
+          >
+            New Releases
+          </button>
+          <button
+            className={upcoming ? "btn-active" : "none"}
+            onClick={() => {
+              toggleUpcoming();
+              scrollTo(div);
+            }}
+          >
+            Upcoming
+          </button>
+        </div>
+      </nav>
 
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
+      <div ref={div} style={{ paddingTop: "2rem" }}>
+        <Trending
+          trending={trending}
+          selectedGame={selectedGame}
+          setSelectedGame={setSelectedGame}
+        />
       </div>
+      <NewReleases
+        newReleases={newReleases}
+        selectedGame={selectedGame}
+        setSelectedGame={setSelectedGame}
+      />
+      <Upcoming
+        upcoming={upcoming}
+        selectedGame={selectedGame}
+        setSelectedGame={setSelectedGame}
+      />
     </main>
   );
 }
